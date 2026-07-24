@@ -7,15 +7,26 @@ import io
 import math
 from typing import Dict, Any, List, Optional, Union
 
+import importlib
+
+# Dynamic import to avoid static IDE linter warnings if pypdf is not indexed in the active workspace environment
+PdfReader = None
+PDF_READER_AVAILABLE = False
+
 try:
-    from pypdf import PdfReader
-    PDF_READER_AVAILABLE = True
+    _pypdf_mod = importlib.import_module("pypdf")
+    PdfReader = getattr(_pypdf_mod, "PdfReader", None)
+    if PdfReader is not None:
+        PDF_READER_AVAILABLE = True
 except ImportError:
     try:
-        from PyPDF2 import PdfReader
-        PDF_READER_AVAILABLE = True
+        _pypdf2_mod = importlib.import_module("PyPDF2")
+        PdfReader = getattr(_pypdf2_mod, "PdfReader", None)
+        if PdfReader is not None:
+            PDF_READER_AVAILABLE = True
     except ImportError:
         PDF_READER_AVAILABLE = False
+
 
 
 def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
