@@ -255,6 +255,9 @@ if st.session_state["parsed_doc"]:
     doc_data = st.session_state["parsed_doc"]
     stats = doc_data["stats"]
     text = doc_data["text"]
+    clean_text = doc_data.get("clean_text", text)
+    target_ai_text = clean_text if clean_text.strip() else text
+
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "📄 Document Overview",
@@ -319,7 +322,7 @@ if st.session_state["parsed_doc"]:
                         try:
                             summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                             summary_res = summarizer.generate_summary(
-                                text,
+                                target_ai_text,
                                 summary_style=summary_style,
                                 custom_instructions=custom_prompt
                             )
@@ -343,7 +346,7 @@ if st.session_state["parsed_doc"]:
                     with st.spinner("Extracting critical insights & key concepts..."):
                         try:
                             summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
-                            key_pts_res = summarizer.extract_key_points(text)
+                            key_pts_res = summarizer.extract_key_points(target_ai_text)
                             st.session_state["key_points_output"] = key_pts_res
                         except Exception as e:
                             st.error(f"Failed to extract key points: {str(e)}")
@@ -401,7 +404,7 @@ if st.session_state["parsed_doc"]:
                         try:
                             summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                             answer = summarizer.answer_question(
-                                text,
+                                target_ai_text,
                                 question=query_to_run,
                                 chat_history=st.session_state["chat_history"][:-1]
                             )
@@ -426,7 +429,7 @@ if st.session_state["parsed_doc"]:
                 with st.spinner("Generating document analytics report..."):
                     try:
                         summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
-                        analytics_res = summarizer.extract_insights(text)
+                        analytics_res = summarizer.extract_insights(target_ai_text)
                         st.session_state["analytics_output"] = analytics_res
                     except Exception as e:
                         st.error(f"Error extracting document analytics: {str(e)}")
