@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 from document_parser import parse_uploaded_document, chunk_text
 from summarizer import GeminiSummarizer, NEW_SDK_AVAILABLE, LEGACY_SDK_AVAILABLE
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from .env file
+load_dotenv(override=True)
 
 # --- STREAMLIT PAGE CONFIGURATION ---
 st.set_page_config(
@@ -152,24 +152,20 @@ if "analytics_output" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = []
 
+# Fetch GEMINI_API_KEY from environment / .env file
+api_key_from_env = os.getenv("GEMINI_API_KEY", "").strip()
+
 # --- SIDEBAR CONFIGURATION ---
 with st.sidebar:
     st.title("⚙️ Control Panel")
     st.markdown("---")
 
-    # API Key Input
-    env_api_key = os.getenv("GEMINI_API_KEY", "")
-    api_key_input = st.text_input(
-        "🔑 Gemini API Key",
-        value=env_api_key,
-        type="password",
-        help="Get your key at https://aistudio.google.com/"
-    )
-
-    if api_key_input:
-        st.success("API Key Provided", icon="✅")
+    # Display API Key status loaded from .env
+    st.subheader("🔑 API Key Status")
+    if api_key_from_env:
+        st.success("Loaded from `.env` file ✅", icon="✅")
     else:
-        st.warning("API Key Required", icon="⚠️")
+        st.error("Missing in `.env` file ⚠️\nPlease set `GEMINI_API_KEY=your_key` in `.env`", icon="⚠️")
 
     st.markdown("---")
     st.subheader("🤖 Model & Parameters")
@@ -311,8 +307,8 @@ if st.session_state["parsed_doc"]:
     with tab2:
         st.subheader("✨ AI Intelligence Hub")
 
-        if not api_key_input:
-            st.warning("⚠️ Please provide a Gemini API Key in the sidebar to generate summaries.")
+        if not api_key_from_env:
+            st.warning("⚠️ `GEMINI_API_KEY` is not set in `.env`. Please add `GEMINI_API_KEY=your_key` to your `.env` file.")
         else:
             col_sum, col_pts = st.columns(2)
 
@@ -321,7 +317,7 @@ if st.session_state["parsed_doc"]:
                 if st.button("🚀 Generate Summary", type="primary", use_container_width=True):
                     with st.spinner(f"Generating '{summary_style}' using {selected_model}..."):
                         try:
-                            summarizer = GeminiSummarizer(api_key=api_key_input, model_name=selected_model)
+                            summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                             summary_res = summarizer.generate_summary(
                                 text,
                                 summary_style=summary_style,
@@ -346,7 +342,7 @@ if st.session_state["parsed_doc"]:
                 if st.button("🌟 Extract Key Points", use_container_width=True):
                     with st.spinner("Extracting critical insights & key concepts..."):
                         try:
-                            summarizer = GeminiSummarizer(api_key=api_key_input, model_name=selected_model)
+                            summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                             key_pts_res = summarizer.extract_key_points(text)
                             st.session_state["key_points_output"] = key_pts_res
                         except Exception as e:
@@ -367,8 +363,8 @@ if st.session_state["parsed_doc"]:
         st.subheader("💬 Ask Anything About Your Document")
         st.caption("Answers are strictly grounded in the content of your uploaded document.")
 
-        if not api_key_input:
-            st.warning("⚠️ Please enter your Gemini API Key in the sidebar to ask questions.")
+        if not api_key_from_env:
+            st.warning("⚠️ `GEMINI_API_KEY` is not set in `.env`. Please add `GEMINI_API_KEY=your_key` to your `.env` file.")
         else:
             # Suggested Question Chips
             st.markdown("**Suggested Questions:**")
@@ -403,7 +399,7 @@ if st.session_state["parsed_doc"]:
                 with st.chat_message("assistant"):
                     with st.spinner("Analyzing document context..."):
                         try:
-                            summarizer = GeminiSummarizer(api_key=api_key_input, model_name=selected_model)
+                            summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                             answer = summarizer.answer_question(
                                 text,
                                 question=query_to_run,
@@ -423,13 +419,13 @@ if st.session_state["parsed_doc"]:
     with tab4:
         st.subheader("📊 Tone, Target Audience & Domain Breakdown")
 
-        if not api_key_input:
-            st.warning("⚠️ Please provide a Gemini API Key to generate document analytics.")
+        if not api_key_from_env:
+            st.warning("⚠️ `GEMINI_API_KEY` is not set in `.env`. Please add `GEMINI_API_KEY=your_key` to your `.env` file.")
         else:
             if st.button("🔍 Analyze Document Intelligence", type="primary"):
                 with st.spinner("Generating document analytics report..."):
                     try:
-                        summarizer = GeminiSummarizer(api_key=api_key_input, model_name=selected_model)
+                        summarizer = GeminiSummarizer(api_key=api_key_from_env, model_name=selected_model)
                         analytics_res = summarizer.extract_insights(text)
                         st.session_state["analytics_output"] = analytics_res
                     except Exception as e:

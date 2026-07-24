@@ -18,10 +18,9 @@ except ImportError:
         PDF_READER_AVAILABLE = False
 
 
-
 def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
     """
-    Extract text and metadata from PDF bytes using pypdf.
+    Extract text and metadata from PDF bytes using pypdf/PyPDF2.
     
     Args:
         file_bytes: Raw bytes of the uploaded PDF file.
@@ -34,11 +33,16 @@ def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
             "PDF reading library missing. Please install pypdf by running: pip install pypdf"
         )
 
-    pdf_stream = io.BytesIO(file_bytes)
-    reader = PdfReader(pdf_stream)
+    if not file_bytes or len(file_bytes) == 0:
+        raise ValueError("The uploaded PDF file is empty (0 bytes).")
 
-    
-    if reader.is_encrypted:
+    pdf_stream = io.BytesIO(file_bytes)
+    try:
+        reader = PdfReader(pdf_stream)
+    except Exception as e:
+        raise ValueError(f"Could not open or parse PDF file: {str(e)}")
+
+    if getattr(reader, "is_encrypted", False):
         try:
             # Try decrypting with empty password for unencrypted-protected PDFs
             reader.decrypt("")
@@ -46,16 +50,28 @@ def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
             raise ValueError(f"PDF is encrypted and could not be unlocked: {str(e)}")
 
     extracted_pages: List[str] = []
-    total_pages = len(reader.pages)
+    total_pages = len(reader.pages) if hasattr(reader, "pages") else 0
 
+    if total_pages == 0:
+        raise ValueError("The uploaded PDF file contains 0 pages.")
+
+    extractable_text_count = 0
     for i, page in enumerate(reader.pages):
-        page_text = page.extract_text()
-        if page_text:
-            extracted_pages.append(f"--- Page {i + 1} ---\n{page_text.strip()}")
-        else:
-            extracted_pages.append(f"--- Page {i + 1} ---\n[No extractable text found on this page]")
+        try:
+            page_text = page.extract_text()
+            if page_text and page_text.strip():
+                extracted_pages.append(f"--- Page {i + 1} ---\n{page_text.strip()}")
+                extractable_text_count += len(page_text.strip())
+            else:
+                extracted_pages.append(f"--- Page {i + 1} ---\n[No extractable text found on this page]")
+        except Exception as e:
+            extracted_pages.append(f"--- Page {i + 1} ---\n[Error extracting page {i + 1}: {str(e)}]")
 
     full_text = "\n\n".join(extracted_pages)
+    
+    if extractable_text_count == 0:
+        full_text += "\n\n⚠️ Note: No select-able text could be extracted from this PDF. It may be a scanned image-only PDF."
+
     return {
         "text": full_text,
         "page_count": total_pages,
@@ -73,6 +89,9 @@ def extract_text_from_txt(file_bytes: bytes) -> str:
     Returns:
         Decoded text string.
     """
+    if not file_bytes or len(file_bytes) == 0:
+        raise ValueError("The uploaded text file is empty (0 bytes).")
+
     encodings = ["utf-8", "utf-8-sig", "latin-1", "cp1252"]
     for enc in encodings:
         try:
@@ -123,6 +142,9 @@ def parse_uploaded_document(file_name: str, file_bytes: bytes) -> Dict[str, Any]
     Returns:
         Dict containing filename, file_type, text, stats, and metadata.
     """
+    if not file_name:
+        raise ValueError("Invalid file upload: Missing filename.")
+
     lower_name = file_name.lower()
     
     if lower_name.endswith(".pdf"):
@@ -160,8 +182,8 @@ def chunk_text(text: str, max_chunk_chars: int = 12000, overlap_chars: int = 500
     Returns:
         List of text chunk strings.
     """
-    if len(text) <= max_chunk_chars:
-        return [text]
+    if not text or len(text) <= max_chunk_chars:
+        return [text] if text else []
 
     chunks = []
     start = 0
