@@ -6,7 +6,17 @@ Handles PDF, TXT, and Markdown file parsing, text extraction, and document analy
 import io
 import math
 from typing import Dict, Any, List, Optional
-from pypdf import PdfReader
+
+try:
+    from pypdf import PdfReader
+    PDF_READER_AVAILABLE = True
+except ImportError:
+    try:
+        from PyPDF2 import PdfReader
+        PDF_READER_AVAILABLE = True
+    except ImportError:
+        PDF_READER_AVAILABLE = False
+
 
 
 def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
@@ -19,8 +29,14 @@ def extract_text_from_pdf(file_bytes: bytes) -> Dict[str, Any]:
     Returns:
         Dict containing raw text, page count, and status.
     """
+    if not PDF_READER_AVAILABLE:
+        raise ImportError(
+            "PDF reading library missing. Please install pypdf by running: pip install pypdf"
+        )
+
     pdf_stream = io.BytesIO(file_bytes)
     reader = PdfReader(pdf_stream)
+
     
     if reader.is_encrypted:
         try:
