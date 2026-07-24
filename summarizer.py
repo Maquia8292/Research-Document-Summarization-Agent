@@ -6,18 +6,24 @@ Wraps Gemini API using google-genai / google-generativeai SDKs for document summ
 import os
 from typing import Dict, Any, List, Optional, Tuple
 
-# Try importing the new unified google-genai SDK first, fallback to google-generativeai
+NEW_SDK_AVAILABLE = False
+LEGACY_SDK_AVAILABLE = False
+
+# Try importing the new unified google-genai SDK first
 try:
     from google import genai
     from google.genai import types
     NEW_SDK_AVAILABLE = True
 except ImportError:
-    NEW_SDK_AVAILABLE = False
-    try:
-        import google.generativeai as legacy_genai
-        LEGACY_SDK_AVAILABLE = True
-    except ImportError:
-        LEGACY_SDK_AVAILABLE = False
+    pass
+
+# Try importing legacy google-generativeai SDK
+try:
+    import google.generativeai as legacy_genai
+    LEGACY_SDK_AVAILABLE = True
+except ImportError:
+    pass
+
 
 
 class GeminiSummarizer:
